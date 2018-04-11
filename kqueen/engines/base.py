@@ -189,7 +189,7 @@ class BaseEngine:
         """
         if not hasattr(cls, 'parameter_schema'):
             raise NotImplementedError('"parameter_schema" attribute should be provided in the '
-                                      + 'Provisioner class implementation')
+                                      'Provisioner class implementation')
         return cls.parameter_schema
 
     def get_progress(self):

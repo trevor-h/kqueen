@@ -9,6 +9,16 @@ config = current_config()
 
 
 class LDAPAuth(BaseAuth):
+    parameter_schema = {
+        'username': {
+            'type': 'text',
+            'label': 'LDAP',
+            'validators': {
+                'required': True
+            }
+        }
+    }
+
     def __init__(self, *args, **kwargs):
         """
         Implementation of :func:`~kqueen.auth.base.__init__`

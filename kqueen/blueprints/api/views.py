@@ -13,6 +13,7 @@ from flask_jwt import current_identity
 from flask_jwt import jwt_required
 from importlib import import_module
 from kqueen.auth import encrypt_password
+from kqueen.auth.common import generate_auth_options
 from kqueen.models import Cluster
 from kqueen.models import Organization
 from kqueen.models import Provisioner
@@ -471,3 +472,21 @@ def swagger_json():
         abort(500)
 
     return jsonify(data)
+
+
+@api.route('/configurations/auth', methods=['GET'])
+@jwt_required()
+def auth_params_configuration():
+
+    auth_opts = generate_auth_options(config.get("AUTH_MODULES"))
+    try:
+        for name, configuration in auth_opts.items():
+            auth_cls_name = configuration['engine']
+            module = import_module('kqueen.auth')
+            _class = getattr(module, auth_cls_name)
+            auth_opts[name]['ui_parameters'] = _class.get_parameter_schema()
+    except NotImplementedError:
+        logger.exception('UI parameters is not specified for "{}" auth type'.format(name))
+    except Exception:
+        logger.exception('Unable to read UI parameters for "{}" auth type'.format(name))
+    return jsonify(auth_opts)

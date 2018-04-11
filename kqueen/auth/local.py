@@ -8,6 +8,16 @@ logger = logging.getLogger('kqueen_api')
 
 
 class LocalAuth(BaseAuth):
+    parameter_schema = {
+        'username': {
+            'type': 'email',
+            'label': 'Local',
+            'validators': {
+                'required': True
+            }
+        }
+    }
+
     def verify(self, user, password):
         """Implementation of :func:`~kqueen.auth.base.__init__`
 
